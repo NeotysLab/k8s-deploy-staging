@@ -1,0 +1,97 @@
+name: payment_neoload
+variables:
+- constant:
+    name: basicpath
+    value: CHECK_TO_REPLACE
+- constant:
+    name: paymentauth
+    value: PAYMENT_TO_REPLACE
+- constant:
+    name: server_host
+    value: HOST_TO_REPLACE
+- constant:
+    name: server_port
+    value: PORT_TO_REPLACE
+- constant:
+    name: dynatraceApiKey
+    value: APIKEY_TO_REPLACE
+- constant:
+    name: dynatraceid
+    value: DTID_TO_REPLACE
+- constant:
+    name: jsonAnomalieDetectionFile
+    value: JSONFILE_TO_REPLACE
+- constant:
+    name: TAGS
+    value: TAGS_TO_REPLACE
+servers:
+- name: catalogue_host
+  host: ${server_host}
+  port: ${server_port}
+user_paths:
+- name: BasicCheck
+  actions:
+    steps:
+    - transaction:
+        name: BasicCheck
+        steps:
+        - request:
+            url: /${basicpath}
+            server: catalogue_host
+            method: GET
+            headers:
+            - Cache-Control: no-cache
+            - Content-Type: application/json
+            - json: "true"
+    - think_time: 250ms
+- name: paymentLoad
+  actions:
+    steps:
+    - transaction:
+        name: Payment
+        steps:
+        - request:
+            url: /${paymentauth}
+            server: catalogue_host
+            method: POST
+            headers:
+            - Cache-Control: no-cache
+            - Content-Type: application/json
+            - json: "true"
+            body: |
+              {
+              	"amount": 10.00
+              }
+    - think_time: 250ms
+
+populations:
+- name: BasicCheck
+  user_paths:
+  - name: BasicCheck
+    distribution: 100%
+- name: paymentLoad
+  user_paths:
+  - name: paymentLoad
+    distribution: 100%
+scenarios:
+- name: BasicCheck
+  populations:
+  - name: BasicCheck
+    constant_load:
+      users: 1
+      duration: 15 iterations
+  - name: Population_Dynatrace_Integration
+    constant_load:
+      users: 1
+      duration: 15 iterations
+- name: paymentLoad
+  populations:
+  - name: paymentLoad
+    constant_load:
+      users: 49
+      duration: 5m
+      rampup: 30s
+  - name: Population_Dynatrace_Integration
+    constant_load:
+      users: 1
+      duration: 5m

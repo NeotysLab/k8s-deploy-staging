@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nl-lg-catalogue
+  namespace: cicd
+  labels:
+    nl_mode: lg
+    app: lg
+spec:
+  containers:
+    - image: neotys/neoload-loadgenerator:latest
+      name: nl-lg
+      imagePullPolicy: IfNotPresent
+      ports:
+      - containerPort: 7100
+        protocol: TCP
+  restartPolicy: Never
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nl-lg-catalogue
+  labels:
+     app: nl-lg
+     nl_mode: lg
+  namespace: cicd
+spec:
+  ports:
+    - name: nl-lg
+      protocol: TCP
+      port: 7100
+      targetPort: 7100
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 9376
+    - name: https
+      protocol: TCP
+      port: 443
+      targetPort: 9377
+  selector:
+    app: lg
+  type: ClusterIP
+

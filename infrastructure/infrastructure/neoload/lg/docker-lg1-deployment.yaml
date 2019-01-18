@@ -1,0 +1,25 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.17.0 (a74acad)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: nl-lg
+  name: nl-lg
+spec:
+  replicas: 1
+
+  template:
+    metadata:
+      labels:
+        io.kompose.service: nl-lg
+    spec:
+      containers:
+      - image: neotys/neoload-loadgenerator:latest
+        name: docker-lg1
+        ports:
+      - containerPort: 8080
+      restartPolicy: Always
+status: {}
