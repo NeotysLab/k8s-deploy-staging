@@ -1,0 +1,467 @@
+name: payment_neoload
+variables:
+- constant:
+    name: basicpath
+    value: CHECK_TO_REPLACE
+- constant:
+    name: server_host
+    value: HOST_TO_REPLACE
+- constant:
+    name: server_port
+    value: PORT_TO_REPLACE
+- constant:
+    name: dynatraceApiKey
+    value: APIKEY_TO_REPLACE
+- constant:
+    name: dynatraceid
+    value: DTID_TO_REPLACE
+- constant:
+    name: jsonAnomalieDetectionFile
+    value: JSONFILE_TO_REPLACE
+- constant:
+    name: TAGS
+    value: TAGS_TO_REPLACE
+- constant:
+    name: outPutReferenceFile
+    value: OUTPUTFILE_TO_REPLACE
+servers:
+- name: catalogue_host
+  host: ${server_host}
+  port: ${server_port}
+user_paths:
+- name: End2End
+  actions:
+    steps:
+    - transaction:
+        name: Home Page
+        steps:
+        - request:
+            url: /index.html?size=500
+            server: catalogue_host
+            method: GET
+            headers:
+            - Cache-Control: no-cache
+            - Content-Type: application/json
+            - json: "true"
+        - think_time: 250ms
+        - request:
+            url: /catalogue?size=5
+            server: catalogue_host
+            method: GET
+            headers:
+            - Cache-Control: no-cache
+            - Content-Type: application/json
+            - json: "true"
+            - Accept-Language: en-US,en;q=0.9
+            - X-Requested-With: XMLHttpRequest
+            - Accept-Encoding: gzip, deflate
+            - Accept: application/json, text/javascript, */*; q=0.01
+            - User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+        - think_time: 250ms
+        - request:
+            url: /basket.html
+            server: catalogue_host
+            method: GET
+            headers:
+            - Cache-Control: no-cache
+            - Content-Type: application/json
+            - json: "true"
+            - Accept-Language: en-US,en;q=0.9
+            - Upgrade-Insecure-Requests: 1
+            - Accept-Encoding: gzip, deflate
+            - Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
+            - User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+        - think_time: 250ms
+        - request:
+            url: /cart?size=500
+            server: catalogue_host
+            method: GET
+            headers:
+            - Cache-Control: no-cache
+            - Content-Type: application/json
+            - json: "true"
+            - Accept-Language: en-US,en;q=0.9
+            - X-Requested-With: XMLHttpRequest
+            - Accept: application/json, text/javascript, */*; q=0.01
+            - User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+          - think_time: 250ms
+      - think_time: 1s
+      - transaction:
+        name: Browse Categories
+        steps:
+        - request:
+            url: /category.html
+            server: catalogue_host
+            method: GET
+            headers:
+            - Cache-Control: no-cache
+            - Content-Type: application/json
+            - json: "true"
+        - think_time: 250ms
+        - request:
+            url: /tags?tags=magic
+            server: catalogue_host
+            method: GET
+            headers:
+            - Cache-Control: no-cache
+            - Content-Type: application/json
+            - json: "true"
+            - Accept-Language: en-US,en;q=0.9
+            - X-Requested-With: XMLHttpRequest
+            - Accept-Encoding: gzip, deflate
+            - Accept: application/json, text/javascript, */*; q=0.01
+            - User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+        - think_time: 250ms
+        - request:
+            url: /cart
+            server: catalogue_host
+            method: GET
+            headers:
+            - Cache-Control: no-cache
+            - Content-Type: application/json
+            - json: "true"
+            - Accept-Language: en-US,en;q=0.9
+            - X-Requested-With: XMLHttpRequest
+            - Accept-Encoding: gzip, deflate
+            - Accept: application/json, text/javascript, */*; q=0.01
+            - User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+        - think_time: 250ms
+        - request:
+            url: /catalogue/size?tags=magic
+            server: catalogue_host
+            method: GET
+            headers:
+            - Cache-Control: no-cache
+            - Content-Type: application/json
+            - json: "true"
+            - Accept-Language: en-US,en;q=0.9
+            - X-Requested-With: XMLHttpRequest
+            - Accept-Encoding: gzip, deflate
+            - Accept: application/json, text/javascript, */*; q=0.01
+            - User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+        - think_time: 250ms
+        - request:
+            url: /catalogue?page=1&size=6&tags=magic
+            server: catalogue_host
+            method: GET
+            headers:
+            - Cache-Control: no-cache
+            - Content-Type: application/json
+            - json: "true"
+            - Accept-Language: en-US,en;q=0.9
+            - X-Requested-With: XMLHttpRequest
+            - Accept-Encoding: gzip, deflate
+            - Accept: application/json, text/javascript, */*; q=0.01
+            - User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+        - think_time: 250ms
+        - request:
+            url: /category.html?tags=red
+            server: catalogue_host
+            method: GET
+            headers:
+            - Cache-Control: no-cache
+            - Content-Type: application/json
+            - json: "true"
+            - Accept-Language: en-US,en;q=0.9
+            - X-Requested-With: XMLHttpRequest
+            - Accept-Encoding: gzip, deflate
+            - Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
+            - User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+        - think_time: 250ms
+        - request:
+            url: /tags
+            server: catalogue_host
+            method: GET
+            headers:
+            - Cache-Control: no-cache
+            - Content-Type: application/json
+            - json: "true"
+            - Accept-Language: en-US,en;q=0.9
+            - X-Requested-With: XMLHttpRequest
+            - Accept-Encoding: gzip, deflate
+            - Accept: application/json, text/javascript, */*; q=0.01
+            - User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+        - request:
+            url: /catalogue/size?tags=red
+            server: catalogue_host
+            method: GET
+            headers:
+            - Cache-Control: no-cache
+            - Content-Type: application/json
+            - json: "true"
+            - Accept-Language: en-US,en;q=0.9
+            - X-Requested-With: XMLHttpRequest
+            - Accept-Encoding: gzip, deflate
+            - Accept: application/json, text/javascript, */*; q=0.01
+            - User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+        - think_time: 250ms
+        - request:
+            url: /catalogue?page=1&size=6&tags=red
+            server: catalogue_host
+            method: GET
+            headers:
+            - Cache-Control: no-cache
+            - Content-Type: application/json
+            - json: "true"
+            - Accept-Language: en-US,en;q=0.9
+            - X-Requested-With: XMLHttpRequest
+            - Accept-Encoding: gzip, deflate
+            - Accept: application/json, text/javascript, */*; q=0.01
+            - User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+        - think_time: 250ms
+        - request:
+            url: /detail.html?id=808a2de1-1aaa-4c25-a9b9-6612e8f29a38
+            server: catalogue_host
+            method: GET
+            headers:
+            - Cache-Control: no-cache
+            - Content-Type: application/json
+            - json: "true"
+            - Accept-Language: en-US,en;q=0.9
+            - Upgrade-Insecure-Requests: 1
+            - Accept-Encoding: gzip, deflate
+            - Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
+            - User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+        - think_time: 250ms
+        - request:
+            url: /catalogue/808a2de1-1aaa-4c25-a9b9-6612e8f29a38
+            server: catalogue_host
+            method: GET
+            headers:
+            - Cache-Control: no-cache
+            - Content-Type: application/json
+            - json: "true"
+            - Accept-Language: en-US,en;q=0.9
+            - X-Requested-With: XMLHttpRequest
+            - Accept-Encoding: gzip, deflate
+            - Accept: application/json, text/javascript, */*; q=0.01
+            - User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+        - think_time: 250ms
+        - request:
+            url: /catalogue?sort=id&size=3&tags=blue
+            server: catalogue_host
+            method: GET
+            headers:
+            - Cache-Control: no-cache
+            - Content-Type: application/json
+            - json: "true"
+            - Accept-Language: en-US,en;q=0.9
+            - X-Requested-With: XMLHttpRequest
+            - Accept-Encoding: gzip, deflate
+            - Accept: application/json, text/javascript, */*; q=0.01
+            - User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+        - think_time: 250ms
+      - think_time: 1s
+      - transaction:
+        name: Add to Cart
+        steps:
+        - request:
+            url: /detail.html?id=808a2de1-1aaa-4c25-a9b9-6612e8f29a38
+            server: catalogue_host
+            method: GET
+            headers:
+            - Cache-Control: no-cache
+            - Content-Type: application/json
+            - json: "true"
+            - Accept-Language: en-US,en;q=0.9
+            - Upgrade-Insecure-Requests: 1
+            - Accept-Encoding: gzip, deflate
+            - Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
+            - User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+        - think_time: 250ms
+        - request:
+            url: /catalogue/808a2de1-1aaa-4c25-a9b9-6612e8f29a38
+            server: catalogue_host
+            method: GET
+            headers:
+            - Cache-Control: no-cache
+            - Content-Type: application/json
+            - json: "true"
+            - Accept-Language: en-US,en;q=0.9
+            - X-Requested-With: XMLHttpRequest
+            - Accept-Encoding: gzip, deflate
+            - Accept: application/json, text/javascript, */*; q=0.01
+            - User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+        - think_time: 250ms
+        - request:
+            url: /catalogue?sort=id&size=3&tags=blue
+            server: catalogue_host
+            method: GET
+            headers:
+            - Cache-Control: no-cache
+            - Content-Type: application/json
+            - json: "true"
+            - Accept-Language: en-US,en;q=0.9
+            - X-Requested-With: XMLHttpRequest
+            - Accept-Encoding: gzip, deflate
+            - Accept: application/json, text/javascript, */*; q=0.01
+            - User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+        - think_time: 250ms
+        - request:
+            url: /cart
+            server: catalogue_host
+            method: POST
+            body: |
+              {"id":"808a2de1-1aaa-4c25-a9b9-6612e8f29a38"}
+            headers:
+            - Cache-Control: no-cache
+            - Content-Type: application/json
+            - json: "true"
+            - Accept-Language: en-US,en;q=0.9
+            - X-Requested-With: XMLHttpRequest
+            - Accept-Encoding: gzip, deflate
+            - Accept: *
+            - User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+        - think_time: 250ms
+        - request:
+            url: /cart
+            server: catalogue_host
+            method: GET
+            headers:
+            - Cache-Control: no-cache
+            - Content-Type: application/json
+            - json: "true"
+            - Accept-Language: en-US,en;q=0.9
+            - X-Requested-With: XMLHttpRequest
+            - Accept-Encoding: gzip, deflate
+            - Accept: application/json, text/javascript, */*; q=0.01
+            - User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+        - think_time: 250ms
+      - think_time: 1s
+      - transaction:
+        name: Remove from Cart
+        steps:
+        - request:
+            url: /basket.html
+            server: catalogue_host
+            method: GET
+            headers:
+            - Cache-Control: no-cache
+            - Content-Type: application/json
+            - json: "true"
+            - Accept-Language: en-US,en;q=0.9
+            - Upgrade-Insecure-Requests: 1
+            - Accept-Encoding: gzip, deflate
+            - Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
+            - User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+            - think_time: 250ms
+        - request:
+            url: /cart/808a2de1-1aaa-4c25-a9b9-6612e8f29a38
+            server: catalogue_host
+            method: DELETE
+            headers:
+            - Cache-Control: no-cache
+            - Content-Type: application/json
+            - json: "true"
+            - Accept-Language: en-US,en;q=0.9
+            - X-Requested-With: XMLHttpRequest
+            - Accept-Encoding: gzip, deflate
+            - Accept: application/json, text/javascript, */*; q=0.01
+            - User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+        - think_time: 250ms
+        - request:
+            url: /basket.html
+            server: catalogue_host
+            method: GET
+            headers:
+            - Cache-Control: no-cache
+            - Content-Type: application/json
+            - json: "true"
+            - Accept-Language: en-US,en;q=0.9
+            - Upgrade-Insecure-Requests: 1
+            - Accept-Encoding: gzip, deflate
+            - Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
+            - User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+          - think_time: 250ms
+        - request:
+            url: /cart
+            server: catalogue_host
+            method: GET
+            headers:
+            - Cache-Control: no-cache
+            - Content-Type: application/json
+            - json: "true"
+            - Accept-Language: en-US,en;q=0.9
+            - X-Requested-With: XMLHttpRequest
+            - Accept-Encoding: gzip, deflate
+            - Accept: application/json, text/javascript, */*; q=0.01
+            - User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+          - think_time: 250ms
+        - request:
+            url: /address
+            server: catalogue_host
+            method: GET
+            headers:
+            - Cache-Control: no-cache
+            - Content-Type: application/json
+            - json: "true"
+            - Accept-Language: en-US,en;q=0.9
+            - X-Requested-With: XMLHttpRequest
+            - Accept-Encoding: gzip, deflate
+            - Accept: application/json, text/javascript, */*; q=0.01
+            - User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+        - think_time: 250ms
+        - request:
+            url: /cart
+            server: catalogue_host
+            method: GET
+            headers:
+            - Cache-Control: no-cache
+            - Content-Type: application/json
+            - json: "true"
+            - Accept-Language: en-US,en;q=0.9
+            - X-Requested-With: XMLHttpRequest
+            - Accept-Encoding: gzip, deflate
+            - Accept: application/json, text/javascript, */*; q=0.01
+            - User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+          - think_time: 250ms
+          - request:
+              url: /catalogue?size=3
+              server: catalogue_host
+              method: GET
+              headers:
+              - Cache-Control: no-cache
+              - Content-Type: application/json
+              - json: "true"
+              - Accept-Language: en-US,en;q=0.9
+              - X-Requested-With: XMLHttpRequest
+              - Accept-Encoding: gzip, deflate
+              - Accept: application/json, text/javascript, */*; q=0.01
+              - User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+            - think_time: 250ms
+            - request:
+                url: /index.html
+                server: catalogue_host
+                method: GET
+                headers:
+                - Cache-Control: no-cache
+                - Content-Type: application/json
+                - json: "true"
+          - think_time: 1s
+populations:
+- name: End2End
+  user_paths:
+  - name: End2End
+    distribution: 100%
+scenarios:
+- name: BasicCheck
+  populations:
+  - name: End2End
+    constant_load:
+      users: 1
+      duration: 15 iterations
+  - name: Population_Dynatrace_Integration
+    constant_load:
+      users: 1
+      duration: 15 iterations
+- name: End2End
+  populations:
+  - name: End2End
+    constant_load:
+      users: 49
+      duration: 5m
+      rampup: 30s
+  - name: Population_Dynatrace_Integration
+    constant_load:
+      users: 1
+      duration: 5m

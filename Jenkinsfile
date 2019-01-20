@@ -6,6 +6,18 @@ pipeline {
     string(name: 'TAG_STAGING', defaultValue: '', description: 'The image of the service to deploy.', trim: true)
     string(name: 'VERSION', defaultValue: '', description: 'The version of the service to deploy.', trim: true)
   }
+   environment {
+      APP_NAME = "${env.APP_NAME}"
+      ARTEFACT_ID = "sockshop-" + "${env.APP_NAME}"
+      DYNATRACEID="${env.DT_ACCOUNTID}"
+      DYNATRACEAPIKEY="${env.DT_API_TOKEN}"
+      NLAPIKEY="${env.NL_WEB_API_KEY}"
+      NL_DT_TAG="app:${env.APP_NAME},environment:${env.TAG_STAGING}"
+      OUTPUTSANITYCHECK="$WORKSPACE/infrastructure/sanitycheck.json"
+      NEOLOAD_ASCODEFILE="$WORKSPACE/neoload/e2e_neoload.yaml"
+      NEOLOAD_ANOMALIEDETECTIONFILE="$WORKSPACE/monspec/e2e_anomamlieDection.json"
+      GITORIGIN="neotyslab"
+    }
   agent {
     label 'kubegit'
   }
@@ -41,6 +53,17 @@ pipeline {
       }
     }
     */
+    stage('Start NeoLoad infrastructure') {
+
+            steps {
+                    container('kubectl') {
+                        script {
+                         sh "kubectl create -f $WORKSPACE/infrastructure/infrastructure/neoload/lg/docker-compose.yml"
+                        }
+                    }
+            }
+
+    }
     stage('Run production ready e2e check in staging') {
       steps {
         echo "Waiting for the service to start..."
@@ -62,20 +85,22 @@ pipeline {
           ]
         ) 
         {
-          container('jmeter') {
+          sh "sed -i 's/HOST_TO_REPLACE/front-end.staging.svc/'  ${NEOLOAD_ASCODEFILE}"
+          sh "sed -i 's/PORT_TO_REPLACE/8080/'  ${NEOLOAD_ASCODEFILE}"
+          sh "sed -i 's/DTID_TO_REPLACE/${DYNATRACEID}/'  ${NEOLOAD_ASCODEFILE}"
+          sh "sed -i 's/APIKEY_TO_REPLACE/${DYNATRACEAPIKEY}/'  ${NEOLOAD_ASCODEFILE}"
+          sh "sed -i 's,JSONFILE_TO_REPLACE,${NEOLOAD_ANOMALIEDETECTIONFILE},'  ${NEOLOAD_ASCODEFILE}"
+          sh "sed -i 's/TAGS_TO_REPLACE/${NL_DT_TAG}/'  ${NEOLOAD_ASCODEFILE}"
+          sh "sed -i 's,OUTPUTFILE_TO_REPLACE,${OUTPUTSANITYCHECK},'  ${NEOLOAD_ASCODEFILE}"
+
+          container('neoload') {
             script {
-              def status = executeJMeter ( 
-                scriptName: "jmeter/front-end_e2e_load.jmx",
-                resultsDir: "e2eCheck_${env.APP_NAME}",
-                serverUrl: "front-end.staging.svc", 
-                serverPort: 8080,
-                checkPath: '/health',
-                vuCount: 10,
-                loopCount: 5,
-                LTN: "e2eCheck_${BUILD_NUMBER}",
-                funcValidation: false,
-                avgRtValidation: 4000
-              )
+              sh "mkdir -p /home/jenkins/.neotys/neoload"
+              sh "cp $WORKSPACE/infrastructure/infrastructure/neoload/license.lic /home/jenkins/.neotys/neoload/"
+
+              status =sh(script:"/neoload/bin/NeoLoadCmd -project $WORKSPACE/neoload/load_template/load_template.nlp ${NEOLOAD_ASCODEFILE} -testResultName e2eCheck__${BUILD_NUMBER} -description e2eCheck__${BUILD_NUMBER} -nlweb -L End2End=$WORKSPACE/infrastructure/infrastructure/neoload/lg/remote.txt -L Population_Dynatrace_Integration=$WORKSPACE/infrastructure/infrastructure/neoload/lg/local.txt -nlwebToken $NLAPIKEY -launch End2End -noGUI", returnStatus: true)
+
+
               if (status != 0) {
                 currentBuild.result = 'FAILED'
                 error "Production ready e2e check in staging failed."
@@ -92,4 +117,16 @@ pipeline {
       }
     }
   }
+  post {
+            always {
+              container('kubectl') {
+                     script {
+                      echo "delete neoload infrastructure"
+                      sh "kubectl delete svc nl-lg-e2e -n cicd"
+                      sh "kubectl delete pod nl-lg-e2e -n cicd --grace-period=0 --force"
+                     }
+              }
+            }
+
+          }
 }

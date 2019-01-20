@@ -1,1 +1,1 @@
-nl-lg-catalogue.cicd.svc
+nl-lg-e2e.cicd.svc
