@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: nl-lg-e2e
-  namespace: cicd
+  namespace: cicd-neotys
   labels:
     nl_mode: lg
     app: lg
@@ -23,7 +23,7 @@ metadata:
   labels:
      app: nl-lg
      nl_mode: lg
-  namespace: cicd
+  namespace: cicd-neotys
 spec:
   ports:
     - name: nl-lg

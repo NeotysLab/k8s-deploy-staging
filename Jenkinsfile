@@ -122,8 +122,8 @@ pipeline {
               container('kubectl') {
                      script {
                       echo "delete neoload infrastructure"
-                      sh "kubectl delete svc nl-lg-e2e -n cicd"
-                      sh "kubectl delete pod nl-lg-e2e -n cicd --grace-period=0 --force"
+                      sh "kubectl delete svc nl-lg-e2e -n cicd-neotys"
+                      sh "kubectl delete pod nl-lg-e2e -n cicd-neotys --grace-period=0 --force"
                      }
               }
             }
