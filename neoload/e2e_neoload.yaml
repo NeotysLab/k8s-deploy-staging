@@ -208,9 +208,13 @@ user_paths:
             - Accept-Encoding: gzip, deflate
             - Accept: application/json, text/javascript, */*; q=0.01
             - User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+            extractors:
+            - name: productid
+              regexp: id:"(.*)"
+              match_number: 0
         - think_time: 250ms
         - request:
-            url: /detail.html?id=808a2de1-1aaa-4c25-a9b9-6612e8f29a38
+            url: /detail.html?id=${productid}
             server: catalogue_host
             method: GET
             headers:
@@ -224,7 +228,7 @@ user_paths:
             - User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
         - think_time: 250ms
         - request:
-            url: /catalogue/808a2de1-1aaa-4c25-a9b9-6612e8f29a38
+            url: /catalogue/${productid}
             server: catalogue_host
             method: GET
             headers:
@@ -250,13 +254,17 @@ user_paths:
             - Accept-Encoding: gzip, deflate
             - Accept: application/json, text/javascript, */*; q=0.01
             - User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+            extractors:
+            - name: productid
+              regexp: id:"(.*)"
+              match_number: 0
         - think_time: 250ms
       - think_time: 1s
       - transaction:
         name: Add to Cart
         steps:
         - request:
-            url: /detail.html?id=808a2de1-1aaa-4c25-a9b9-6612e8f29a38
+            url: /detail.html?id=${productid}
             server: catalogue_host
             method: GET
             headers:
@@ -270,7 +278,7 @@ user_paths:
             - User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
         - think_time: 250ms
         - request:
-            url: /catalogue/808a2de1-1aaa-4c25-a9b9-6612e8f29a38
+            url: /catalogue/${productid}
             server: catalogue_host
             method: GET
             headers:
@@ -296,13 +304,17 @@ user_paths:
             - Accept-Encoding: gzip, deflate
             - Accept: application/json, text/javascript, */*; q=0.01
             - User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+            extractors:
+            - name: productid
+              regexp: id:"(.*)"
+              match_number: 0
         - think_time: 250ms
         - request:
             url: /cart
             server: catalogue_host
             method: POST
             body: |
-              {"id":"808a2de1-1aaa-4c25-a9b9-6612e8f29a38"}
+              {"id":"${productid}"}
             headers:
             - Cache-Control: no-cache
             - Content-Type: application/json
@@ -346,7 +358,7 @@ user_paths:
             - User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
             - think_time: 250ms
         - request:
-            url: /cart/808a2de1-1aaa-4c25-a9b9-6612e8f29a38
+            url: /cart/${productid}
             server: catalogue_host
             method: DELETE
             headers:
@@ -429,14 +441,14 @@ user_paths:
               - Accept: application/json, text/javascript, */*; q=0.01
               - User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
             - think_time: 250ms
-            - request:
-                url: /index.html
-                server: catalogue_host
-                method: GET
-                headers:
-                - Cache-Control: no-cache
-                - Content-Type: application/json
-                - json: "true"
+          - request:
+              url: /index.html
+              server: catalogue_host
+              method: GET
+              headers:
+              - Cache-Control: no-cache
+              - Content-Type: application/json
+              - json: "true"
           - think_time: 1s
 populations:
 - name: End2End
