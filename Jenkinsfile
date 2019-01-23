@@ -15,7 +15,7 @@ pipeline {
       NL_DT_TAG="app:${env.APP_NAME},environment:${env.TAG_STAGING}"
       OUTPUTSANITYCHECK="$WORKSPACE/infrastructure/sanitycheck.json"
       NEOLOAD_ASCODEFILE="$WORKSPACE/neoload/e2e_neoload.yaml"
-      NEOLOAD_ANOMALIEDETECTIONFILE="$WORKSPACE/monspec/e2e_anomamlieDection.json"
+      NEOLOAD_ANOMALIEDETECTIONFILE="$WORKSPACE/monspec/e2e_anomalieDection.json"
       GITORIGIN="neotyslab"
     }
   agent {
